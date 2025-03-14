@@ -15,7 +15,7 @@ exports.index = async (req, res) => {
       totalPages: Math.ceil(totalPosts / limit)
     });
   } catch (error) {
-    console.error('Erro ao buscar posts:', error);
+    console.error('Erro na busca:', error);
     res.status(500).send('Erro interno do servidor');
   }
 };
