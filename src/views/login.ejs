@@ -1,0 +1,36 @@
+<%- include('includes/head.ejs'); %>
+
+  <%- include('includes/nav') %>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-2"></div>
+
+        <div class="col-lg-8 my-3">
+          <h1 class=" text-center">Criar conta ou Entrar</h1>
+          <p class="lead text-center">Faça login ou crie sua conta:</p>
+
+          <%- include('includes/messages'); %>
+        
+          <div class="row">
+            <div class="col-lg">
+              <h4>Faça seu cadastro</h4>
+              <%-include('includes/form-cadastro.ejs'); %>
+            </div>
+            <div class="col-lg">
+              <h4>Faça seu login</h4>
+              <%-include('includes/form-login.ejs'); %>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-lg-2"></div>
+
+      </div>
+
+    </div>
+
+
+    <%- include('includes/footer.ejs'); %>

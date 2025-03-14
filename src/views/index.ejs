@@ -1,0 +1,43 @@
+<%- include('includes/head.ejs'); %>
+<%- include('includes/nav') %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-2"></div>
+
+    <div class="col-lg-8 my-3">
+      <h1 class="text-center">Blog do Marcelo</h1>
+      <p class="lead text-center">Seja bem-vindo ao blog</p>
+
+      <%- include('includes/messages') %>
+
+      <% posts.forEach(post => { %>
+        <h1 class="display-8 font-weight-bold text-center"><%= post.assunto %></h1>
+        <p class="lead text-center"><%= post.texto %></p>
+        <hr>
+      <% }) %>
+
+      <div class="d-flex justify-content-center">
+        <div class="btn-group" role="group" aria-label="Paginação">
+          <a href="?page=1" class="btn btn-secondary">
+            <span>&laquo;</span>
+          </a>
+          <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>" class="btn btn-secondary"><%= currentPage - 1 %></a>
+          <% } %>
+          <button class="btn btn-primary" disabled><%= currentPage %></button>
+          <% if (currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %>" class="btn btn-secondary"><%= currentPage + 1 %></a>
+          <% } %>
+          <a href="?page=<%= totalPages %>" class="btn btn-secondary">
+            <span>&raquo;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-2"></div>
+  </div>
+</div>
+
+<%- include('includes/footer.ejs'); %>
