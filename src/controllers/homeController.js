@@ -3,7 +3,10 @@ const Post = require('../models/PostModel');
 exports.index = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
-  const userId = req.session.user._id;
+  console.log('Res locals user da home:', res.locals.user)
+  console.log('***')
+  console.log('Res ID: ', res.locals.user._id);
+  const userId = res.locals.user._id;
 
   try {
     const posts = await Post.getPostsPaginated(userId, page, limit);

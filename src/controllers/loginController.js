@@ -4,54 +4,59 @@ exports.index = (req, res) => {
   return res.render('login');
 };
 
-exports.register = async function(req, res) {
+exports.register = async function (req, res) {
   try {
     const login = new Login(req.body);
     await login.register();
 
-    if(login.errors.length > 0) {
-      req.flash('errors', login.errors);
-      req.session.save(function() {
-        return res.location(req.get("Referrer"));
-      });
-      return;
-    }
-
-    req.flash('success', 'Seu usuário foi criado com sucesso.');
-    req.session.save(function() {
+    if (login.errors.length > 0) {
+      //flash com lista de errors
       return res.redirect(req.get("Referrer"));
-    });
-  } catch(e) {
+    }
+    //flash avisando que o usuario foi criado
+    return res.redirect(req.get("Referrer"));
+
+  } catch (e) {
     console.log(e);
     return res.render('404');
   }
 };
 
-exports.login = async function(req, res) {
+exports.login = async function (req, res) {
   try {
     const login = new Login(req.body);
     await login.login();
 
-    if(login.errors.length > 0) {
-      req.flash('errors', login.errors);
-      req.session.save(function() {
-        return res.redirect(req.get("Referrer"));
-      });
-      return;
+    if (login.errors.length > 0) {
+      // res.cookie('error',login.errors.join(';'), {maxAge: 60 * 60 * 24 * 7 })
+      return res.redirect('/login');
     }
 
-    req.flash('success', 'Você entrou no sistema.');
-    req.session.user = login.user;
-    req.session.save(function() {
-      return res.redirect('/home');
-    });
-  } catch(e) {
+    console.log('Log do login antes da declaração: ', res.locals.user, '*****', login.user)
+    res.locals.user = login.user;
+    console.log('Log do login depois da declaração: ', res.locals.user, '*****', login.user)
+
+    
+    // res.cookie('success', 'Você entrou na sessão.', {maxAge: 3000});
+    
+    res.cookie('session', 'ativada', { maxAge: 60 * 60 * 24 * 7, path: '/' });
+    res.cookie('user',res.locals.user.email,{maxAge:60 * 60 * 24 * 7})
+    res.cookie('id',res.locals.user._id,{maxAge:60 * 60 * 24 * 7})
+
+    console.log('Cookies no login: ', req.headers.cookie);
+
+    return res.redirect('/home');
+
+  } catch (e) {
     console.log(e);
     return res.render('404');
   }
 };
 
-exports.logout = function(req, res) {
-  req.session.destroy();
+exports.logout = function (req, res) {
+  console.log('Cookies no logout: ', req.headers.cookie);
+  res.cookie('session', 'inactive', { maxAge: 0 });
+  res.cookie('user',res.locals.user.email,{maxAge:0})
+  res.cookie('id',res.locals.user._id,{maxAge:0})
   res.redirect('/login/');
 };
