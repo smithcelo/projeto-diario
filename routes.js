@@ -5,13 +5,14 @@ const homeController = require('./src/controllers/homeController');
 const postsController = require('./src/controllers/postsController');
 const loginController = require('./src/controllers/loginController');
 const aboutController = require('./src/controllers/aboutController');
-const {loginRequired} = require('./src/middlewares/middleware');
-// const {middlewareTeste} = require('./src/middlewares/middleware')
+const {checkCookie} = require('./src/middlewares/middleware');
+
 
 router.use((req, res, next) => {
     console.log(`Método: ${req.method}, Rota: ${req.originalUrl}`);
     next();
 });
+
 
 
 router.get(['/home', '/?page=1'], homeController.index);
@@ -20,9 +21,9 @@ router.get('/posts', postsController.index);
 
 router.get(['/about', '/'], aboutController.index);
 
-router.get('/new/', loginRequired, postController.index);
-router.post('/new/post', loginRequired, postController.newPost); 
-router.get('/posts/post/:id', loginRequired, postController.openPost); 
+router.get('/new/', checkCookie, postController.index);
+router.post('/new/post', checkCookie, postController.newPost); 
+router.get('/posts/post/:id', checkCookie, postController.openPost); 
 
 router.get('/login/', loginController.index);
 router.post('/login/register', loginController.register);

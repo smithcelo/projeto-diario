@@ -1,49 +1,37 @@
-exports.midErrors = (req, res, next) => {
-  res.locals.errors = req.flash('errors');
-  res.locals.success = req.flash('success');
-  res.locals.user = req.session.user;
-  next();
-};
+exports.checkCookie = (req, res, next) => {
+  if (req.headers.cookie) {
+    const headers = req.headers.cookie.split(';');
+    if (headers.length >= 2)
+      next();
+  }
+  else
+    res.redirect('/login')
+}
 
-exports.middlewareTeste = (req, res, next) => {
-  console.log('Passei pelo teste');
+exports.setUser = (req, res, next) => {
+  if (!res.locals.user)
+    res.locals.user = null;
+
+  if (req.headers.cookie && req.headers.cookie.split(';').length >= 2) {
+    const cookies = req.headers.cookie.split(';');
+    const cookieObj = {};
+    cookies.forEach(cookie => {
+      const [key, value] = cookie.trim().split('=');
+      cookieObj[key] = decodeURIComponent(value); //notei que os cookies tavam findo com algum tipo de codificação. o @ tava virando %40. a sugestão pra resolver foi essa
+    });
+    res.locals.user = {};
+    res.locals.user.email = cookieObj.user;
+    res.locals.user._id = cookieObj.id.replace(/^j:/, '').replace(/"/g, ''); // o resgate do cookie tava vndo com um "j:". a sugestao pra limpar o id foi essa
+  }
   next();
 }
 
-exports.checkCsrfError = (err, req, res, next) => {
-  if (err) {
-    return res.render('404');
-  }
+exports.midErrors = (req,res,next) => {
+  
+}
 
-  next();
-};
-
-exports.csrfMiddleware = (req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
-  next();
-};
-
-exports.loginRequired = (req, res, next) => {
-  if (!req.session.user) {
-    req.flash('errors', 'Você precisa fazer login.');
-    req.session.save(() => res.redirect('/login'));
-    return;
-  }
-  req.user = req.session.user; // Adicionando user à requisição
-  next();
-};
-
-// middlewares/logUserId.js
-// exports.iDControl = (req, res, next) => {
-//   if (req.user && req.user._id) {
-//       console.log('User ID:', req.user._id);
-//   } else {
-//       console.log('Usuário não autenticado');
-//   }
-//   next();
-// };
-
-
-
+// exports.midErrors = (req, res, next) => {
+//   res.locals.errors = req.flash('errors');
+//   res.locals.success = req.flash('success');
 //   next();
 // };
