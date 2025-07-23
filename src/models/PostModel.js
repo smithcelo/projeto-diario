@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose; 
+const { Schema } = mongoose;
 
 const PostSchema = new mongoose.Schema({
   assunto: { type: String, required: true },
-  texto: { type: String, required: true },
+  texto: { type: String, required: false }, //troquei o required pra false. o original é true
   criadoEm: { type: Date, default: Date.now },
-  user: {type: Schema.Types.ObjectId, ref: 'User', required: true}
+  atualizadoEm: { type: Date, default: Date.now },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 const PostModel = mongoose.model('Post', PostSchema);
@@ -57,7 +58,7 @@ class NewPost {
     };
   }
 
-  static async buscaPorId (id) {
+  static async buscaPorId(id) {
     if (typeof id !== 'string') return;
     const post = await PostModel.findById(id);
     return post;
@@ -66,17 +67,27 @@ class NewPost {
   static async buscaPosts(userId) {
     const posts = await PostModel.find({ user: userId }).sort({ criadoEm: -1 });
     return posts;
-}
+  }
 
+  static async delete (id) {
+    if(typeof id !== 'string') return;
+    const post = await PostModel.findOneAndDelete({_id: id});
+    return post;
+  }
   
-static async getPostsPaginated(userId, page, limit) {
-  const offset = (page - 1) * limit;
-  return await PostModel.find({ user: userId }).sort({ criadoEm: -1 }).skip(offset).limit(limit);
-}
+   async edit (id) {
+    if(this.errors.length > 0) return;
+    this.post = await PostModel.findByIdAndUpdate(id, this.body, {new:true});
+  }
 
-static async countPosts(userId) {
-  return await PostModel.countDocuments({ user: userId });
-}
+  static async getPostsPaginated(userId, page, limit) {
+    const offset = (page - 1) * limit;
+    return await PostModel.find({ user: userId }).sort({ criadoEm: -1 }).skip(offset).limit(limit);
+  }
+
+  static async countPosts(userId) {
+    return await PostModel.countDocuments({ user: userId });
+  }
 
 }
 

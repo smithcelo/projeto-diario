@@ -1,7 +1,7 @@
 const NewPost = require('../models/PostModel');
 
 exports.index = (req, res) => {
-  return res.render('new');
+  return res.render('new', {post:null}); //garanto que o post nunca vai ser undefined pra não dar problema 
 }
 
 exports.newPost = async function (req, res) {
@@ -17,10 +17,10 @@ exports.newPost = async function (req, res) {
       //flash com lista de erros
       return res.redirect('/new/');
     }
-    
+
     //flash de post postado com sucesso
     return res.redirect('/new');
-    
+
   } catch (e) {
     console.log(e);
     return res.render('404');
@@ -28,7 +28,7 @@ exports.newPost = async function (req, res) {
 };
 
 exports.openPost = async function (req, res) {
-  console.log('entrei na open post');
   const post = await NewPost.buscaPorId(req.params.id);
+  // console.log('Req.params: ', req.params);
   return res.render('post', { post });
 };

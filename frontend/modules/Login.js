@@ -11,10 +11,50 @@ export default class Login {
 
     events() {
         if (!this.form) return;
+
+        // Submit do formulário
         this.form.addEventListener('submit', e => {
             e.preventDefault();
             this.validate(e);
         });
+
+        // Blur individual para validação por campo
+        const emailInput = this.form.querySelector('input[name="email"]');
+        const passwordInput = this.form.querySelector('input[name="password"]');
+        const confirmPasswordInput = this.form.querySelector('input[name="confirmPassword"]');
+
+        emailInput.addEventListener('blur', (e) => this.validateEmail(e));
+        passwordInput.addEventListener('blur', (e) => this.validatePassword(e));
+        confirmPasswordInput.addEventListener('blur', (e) => this.validateConfirmPassword(e));
+    }
+
+    validateEmail(e) {
+        const emailInput = e.target; // já é o input
+        this.clearErrors(emailInput.parentElement);
+
+        if (!validator.isEmail(emailInput.value)) {
+            this.showError(emailInput, 'Email inválido.');
+        }
+    }
+
+    validatePassword(e) {
+        const passwordInput = e.target;
+        this.clearErrors(passwordInput.parentElement);
+
+        if (passwordInput.value.length < 3 || passwordInput.value.length > 50) {
+            this.showError(passwordInput, 'A senha deve conter entre 3 a 50 caracteres.');
+        }
+    }
+
+    validateConfirmPassword(e) {
+        const confirmPasswordInput = e.target;
+        const passwordInput = this.form.querySelector('input[name="password"]');
+
+        this.clearErrors(confirmPasswordInput.parentElement);
+
+        if (confirmPasswordInput.value !== passwordInput.value) {
+            this.showError(confirmPasswordInput, 'As senhas devem ser iguais.');
+        }
     }
 
     validate(e) {
@@ -45,6 +85,7 @@ export default class Login {
 
         if (!error) {
             el.submit();
+            console.log('oie');
         }
     }
 
@@ -60,3 +101,4 @@ export default class Login {
         errorMessages.forEach(error => error.remove());
     }
 }
+

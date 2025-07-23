@@ -1,11 +1,17 @@
-<form action = "/new/post" method="POST">
-    <div class="form-group">
-      <label>Assunto</label>
-      <input type="text" class="form-control" name="assunto" placeholder="Assunto">
-    </div>
-    <div class="form-group">
-      <label>Texto</label>
-      <textarea class="form-control" name="texto" placeholder="Texto" rows="10"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Enviar</button>
-  </form>
+<form id="form-post" class="form-post" action="<%= post ? 'javascript:void(0)' : '/new/post' %>" method="POST">
+  
+  <div class="form-group">
+    <label>Assunto</label>
+    <input id="assunto" class="form-control" type="text" name="assunto" placeholder="Assunto"
+      value="<%= post ? post.assunto : '' %>">
+  </div>
+
+  <div class="form-group">
+    <label>Texto</label>
+    <textarea id="texto" class="form-control" name="texto" placeholder="Texto" rows="10"><%= post ? post.texto : '' %></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary"><%= post ?'Salvar':'Enviar' %></button>  
+  <button type="button" class="btn btn-secondary" onclick="history.back()">Cancelar</button>
+
+</form>

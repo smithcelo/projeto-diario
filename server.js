@@ -14,9 +14,10 @@ mongoose.connect(process.env.CONNECTIONSTRING)
 const flash = require('connect-flash');
 const routes = require('./routes');
 const path = require('path');
-const {setUser} = require('./src/middlewares/middleware');
+const {setUser, darkMode} = require('./src/middlewares/middleware');
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); //adicionei pra poder usar JSON no fetch da função update no front, já q preciso passar dados via json
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.use(flash());
@@ -25,12 +26,13 @@ app.set('views', path.resolve(__dirname, 'src', 'views'));
 app.set('view engine', 'ejs');
 
 app.use(setUser);
+app.use(darkMode);
 // app.use(midErrors);
 app.use(routes);
 
 app.on('pronto', () => {
   app.listen(3000, () => {
-    console.log('Acessar http://localhost:3000');
+    console.log('Acessar http://localhost:3000/login');
     console.log('Servidor executando na porta 3000');
   });
 });
